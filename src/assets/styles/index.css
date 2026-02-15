@@ -53,7 +53,6 @@ body{
   -webkit-backdrop-filter: blur(var(--blur));
   border-radius: var(--radius);
   box-shadow: var(--shadow);
-  overflow:hidden;
 }
 
 /* Header */
@@ -130,8 +129,8 @@ header{
   border-radius:18px;
   border:1px solid rgba(0,0,0,.05);
   background: rgba(0,0,0,.02);
-  overflow:hidden;
   position:relative;
+  overflow: hidden;
 }
 
 /* La imagen ocupa todo y no se deforma */
@@ -201,8 +200,8 @@ header{
 .card-image{
   height:320px;
   border-radius:14px;
-  overflow:hidden;
   background: rgba(0,0,0,.03);
+  overflow: hidden;
 }
 
 .card-image img{
