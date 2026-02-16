@@ -14,8 +14,8 @@ function App() {
         <Route path="/" element={<Home />} />
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<CreateAccount />} />
- <Route path="/viabilidad" element={<ViabilidadEvento />} />     
-<Route path="/organizador/crear" element={<CreateEvent />} />   
+        <Route path="/viabilidad" element={<ViabilidadEvento />} />     
+        <Route path="/organizador/crear" element={<CreateEvent />} />   
       </Routes>
     </Router>
   );
