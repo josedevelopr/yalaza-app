@@ -244,6 +244,32 @@ label{
   gap:10px;
   justify-content:flex-end;
 }
+/* Corrección para Safari y coherencia visual */
+.select-custom {
+  -webkit-appearance: none; /* Elimina estilo nativo en Safari/Chrome */
+  -moz-appearance: none;    /* Elimina estilo nativo en Firefox */
+  appearance: none;
+  background: transparent !important; /* Permite ver el fondo glass del control */
+  cursor: pointer;
+  width: 100%;
+  border: none !important; /* El borde lo da el contenedor .control */
+  outline: none;
+  color: inherit;
+  font-family: inherit;
+  font-size: 1rem;
+}
+
+/* Añadir una flecha personalizada para que el usuario sepa que es un select */
+.control::after {
+  content: '▼';
+  font-size: 10px;
+  color: rgba(255, 255, 255, 0.5);
+  position: absolute;
+  right: 15px;
+  top: 50%;
+  transform: translateY(-50%);
+  pointer-events: none; /* Evita que la flecha interfiera con el click */
+}
 
 @media (max-width: 920px){
   .form-grid{ grid-template-columns: 1fr; }

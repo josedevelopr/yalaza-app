@@ -47,44 +47,12 @@ const Header = () => {
 
           {session ? (
             <>
-              {/* Avatar con inicial (sin dropdown) */}
-              <div 
-                className="profile-avatar" 
-                style={{
-                  width: '38px',
-                  height: '38px',
-                  borderRadius: '50%',
-                  backgroundColor: '#7d5fff',
-                  color: 'white',
-                  fontSize: '1rem',
-                  fontWeight: 'bold',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  marginLeft: '15px',
-                  boxShadow: '0 4px 10px rgba(0,0,0,0.1)'
-                }}
-              >
-                {userInitial}
-              </div>
-
-              {/* Botón directo de logout */}
-              <button 
-                className="btn danger" 
-                onClick={handleLogout}
-                style={{
-                  backgroundColor: 'rgba(255, 71, 87, 0.2)',
-                  color: '#ff4757',
-                  border: '1px solid rgba(255, 71, 87, 0.4)',
-                  padding: '8px 16px',
-                  borderRadius: '8px',
-                  cursor: 'pointer',
-                  fontWeight: '600',
-                  marginLeft: '12px'
-                }}
-              >
+              <button onClick={handleLogout} className="btn danger">
                 Cerrar Sesión
               </button>
+              <div className="profile-avatar">
+                {userInitial}
+              </div>
             </>
           ) : (
             <Link className="btn success" to="/login">Ingresar</Link>
