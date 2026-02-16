@@ -455,6 +455,7 @@ export default function ViabilidadEvento() {
           </div>
         </div>
       </div>
+      <Footer />
       {loading && (
       <div className="loading-overlay">
         <div className="loading-card">
