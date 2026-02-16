@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import '../assets/styles/login.css';
 import MainLayout from '../layouts/MainLayout';
 import { useAuth } from '../hooks/useAuth'; // Asegúrate de que la ruta sea correcta
+
+import '../assets/styles/login.css';
 
 const CreateAccount = () => {
   const navigate = useNavigate();

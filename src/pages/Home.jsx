@@ -66,7 +66,7 @@ const Home = () => {
           <h1>¿Tu evento tendrá público o quedará vacío?</h1>
           <div className="hero-actions">
             <Link to="/organizador/crear" className="btn primary">Crea un Evento</Link>
-            <Link to="/organizador/crear" className="btn warning">Valida la demanda</Link>
+            <Link to="/viabilidad" className="btn warning">Valida la demanda</Link>
           </div>
           <div className="illustration">
             <img src={bannerImg} alt="Banner" />

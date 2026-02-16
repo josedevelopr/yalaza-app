@@ -3,7 +3,8 @@ import Home from './pages/Home';
 import Login from './pages/Login';
 import CreateAccount from './pages/CreateAccount';
 import CreateEvent from './pages/CreateEvent';
-import ViabilidadEvento from './components/ViabilidadEvento';
+import CheckViability from './pages/CheckViability';
+
 
 
 function App() {
@@ -14,8 +15,8 @@ function App() {
         <Route path="/" element={<Home />} />
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<CreateAccount />} />
- <Route path="/viabilidad" element={<ViabilidadEvento />} />     
-<Route path="/organizador/crear" element={<CreateEvent />} />   
+        <Route path="/viabilidad" element={<CheckViability />} />     
+        <Route path="/organizador/crear" element={<CreateEvent />} />   
       </Routes>
     </Router>
   );
