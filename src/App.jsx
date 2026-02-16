@@ -4,19 +4,33 @@ import Login from './pages/Login';
 import CreateAccount from './pages/CreateAccount';
 import CreateEvent from './pages/CreateEvent';
 import CheckViability from './pages/CheckViability';
-
-
+import ProtectedRoute from './components/ProtectedRoute'; // Importar el protector
 
 function App() {
   return (
     <Router>
       <Routes>
-        {/* Esto hace que Home sea la página inicial */}
         <Route path="/" element={<Home />} />
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<CreateAccount />} />
-        <Route path="/viabilidad" element={<CheckViability />} />     
-        <Route path="/organizador/crear" element={<CreateEvent />} />   
+        
+        {/* Rutas Protegidas */}
+        <Route 
+          path="/viabilidad" 
+          element={
+            <ProtectedRoute>
+              <CheckViability />
+            </ProtectedRoute>
+          } 
+        />     
+        <Route 
+          path="/organizador/crear" 
+          element={
+            <ProtectedRoute>
+              <CreateEvent />
+            </ProtectedRoute>
+          } 
+        />   
       </Routes>
     </Router>
   );

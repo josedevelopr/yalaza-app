@@ -14,7 +14,7 @@ const CreateEvent = () => {
     titulo: '',
     descripcion: '',
     tipo: 'POR_META', 
-    min_quorum: 30, // Columna clave para validación de demanda 
+    min_quorum: 30, 
     max_aforo: '',
     precio: '',
     fecha_evento: '',
@@ -25,12 +25,12 @@ const CreateEvent = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
     setLoading(true);
 
-    // Lógica de integridad: si no es POR_META, min_quorum va como null 
     const dataToSubmit = {
       ...formData,
-      organizador_id: user.id,
+      organizador_id: user.id, // Ya validado arriba
       min_quorum: formData.tipo === 'POR_META' ? parseInt(formData.min_quorum) : null
     };
 
@@ -51,8 +51,10 @@ const CreateEvent = () => {
     <MainLayout>
       <div className="content">
         <div className="glass page-head">
-          <h1 className="page-title">Configurar Nuevo Evento</h1>
-          <p className="page-subtitle">Define el quórum necesario para validar tu demanda antes de invertir. [cite: 48, 61]</p>
+          <h1 className="page-title">
+            Configurar Nuevo Evento 
+          </h1>
+          <p className="page-subtitle">Define el quórum necesario para validar tu demanda antes de invertir.</p>
         </div>
 
         <div className="glass form-card">
@@ -107,7 +109,6 @@ const CreateEvent = () => {
                 />
               </div>
 
-              {/* RENDERIZADO CONDICIONAL BASADO EN TIPO  */}
               {formData.tipo === 'POR_META' && (
                 <div className="field">
                   <label>Quórum Mínimo (Asistentes)</label>
@@ -169,7 +170,7 @@ const CreateEvent = () => {
             <div className="row">
               <div className="actions">
                 <button type="button" className="btn ghost" onClick={() => navigate('/')}>Cancelar</button>
-                <button type="submit" className="btn success" disabled={loading}>
+                <button type="submit" className="btn success" disabled={loading || !user}>
                   {loading ? 'Publicando...' : 'Crear Evento'}
                 </button>
               </div>
