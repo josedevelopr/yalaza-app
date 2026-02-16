@@ -86,6 +86,46 @@ header{
   transition: transform .15s ease, filter .15s ease;
 }
 
+/* Botón de acción de peligro (Cerrar Sesión) */
+.btn.danger {
+  background: linear-gradient(180deg, #ff6b6b, #e63946);
+  box-shadow: 0 6px 16px rgba(230, 57, 70, 0.2);
+  border: none;
+  color: white;
+  height: 41px; /* Altura fija para simetría perfecta */
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
+}
+
+/* Avatar de perfil circular */
+.profile-avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background-color: #7d5fff;
+  color: white;
+  font-size: 0.9rem;
+  font-weight: bold;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 12px rgba(124, 77, 255, 0.3);
+  transition: transform 0.2s ease;
+}
+
+.profile-avatar:hover {
+  transform: scale(1.05);
+}
+
+/* Contenedor de acciones del header */
+.header-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
 .btn:hover{
   transform: translateY(-1px);
   filter: brightness(1.05);
