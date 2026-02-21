@@ -30,7 +30,7 @@ const CreateEvent = () => {
 
     const dataToSubmit = {
       ...formData,
-      organizador_id: user.id, // Ya validado arriba
+      organizador_id: user.id,
       min_quorum: formData.tipo === 'POR_META' ? parseInt(formData.min_quorum) : null
     };
 

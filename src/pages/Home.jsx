@@ -10,6 +10,7 @@ import CreateEventBanner from '../components/CreateEventBanner';
 import OrganizerReviews from '../components/OrganizerReviews';
 import FrequentAnswerAndQuestions from '../components/FrequentAnswerAndQuestions';
 import Footer from '../components/Footer';
+import {USER_ROLES} from '../constants/roles';
 
 const Home = () => {
   const navigate = useNavigate();
@@ -38,6 +39,7 @@ const Home = () => {
   };
 
   const userInitial = session?.user?.user_metadata?.first_name?.charAt(0).toUpperCase() || 'U';
+  const isUserRoleAssistant = session?.user?.user_metadata?.role == USER_ROLES.ASISTENTE;
 
   return (
     <div className="wrap">
@@ -45,16 +47,11 @@ const Home = () => {
         <header>
           <div className="brand">YALAZA</div>
           <div className="header-actions">
-            <Link to="/organizador/crear" className="btn primary">Crea un Evento</Link>
-            
+            { isUserRoleAssistant ? <></> : <><Link to="/organizador/crear" className="btn primary">Crea un Evento</Link></>}            
             {session ? (
               <>
-                <button onClick={handleLogout} className="btn danger">
-                  Cerrar Sesión
-                </button>
-                <div className="profile-avatar">
-                  {userInitial}
-                </div>
+                <button onClick={handleLogout} className="btn danger">Cerrar Sesión</button>
+                <div className="profile-avatar">{userInitial}</div>
               </>
             ) : (
               <Link to="/login" className="btn success">Ingresar</Link>
@@ -88,8 +85,6 @@ const Home = () => {
           </div>
         </div>
       </div>
-
-      <h2 className="section-title">Eventos Disponibles</h2>
       <EnabledEvents />
       <CreateEventBanner />
       <OrganizerReviews />
