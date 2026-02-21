@@ -261,6 +261,65 @@ header{
   border:1px solid rgba(0,0,0,.05);
 }
 
+/* Hover effect para todos */
+.btn:hover {
+  filter: brightness(1.1);
+  transform: translateY(-1px);
+}
+
+.card-content {
+  padding: 16px; /* Asegura un margen interno uniforme */
+  display: flex;
+  flex-direction: column;
+}
+
+.full-width {
+  width: 100%;       /* Ocupa todo el ancho disponible del contenedor padre */
+  display: block;    /* Se comporta como bloque para respetar el ancho */
+  padding: 12px 0;   /* Altura cómoda para interacción táctil en móviles */
+  border-radius: 8px; /* Redondeado acorde al estilo moderno */
+  font-weight: 600;
+  text-align: center;
+  transition: all 0.3s ease;
+}
+
+.event-location {
+  padding-bottom: 3em;
+}
+.description-container {
+  /* Altura mínima equivalente a aproximadamente 4-5 líneas de texto */
+  min-height: 90px; 
+  margin-bottom: 16px;
+  overflow: hidden;
+}
+
+.event-description {
+  margin: 0;
+  font-size: 0.9rem;
+  line-height: 1.5;
+  
+  /* Truncado multi-línea por seguridad visual */
+  display: -webkit-box;
+  -webkit-line-clamp: 4; /* Máximo 4 líneas visibles */
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.event-title {
+  /* Fijamos también la altura del título para que la fecha y descripción 
+     empiecen siempre en la misma línea horizontal */
+  min-height: 2.8em; 
+  display: flex;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+/* Colores específicos según tu diseño */
+.btn-primary { background: #845ef7; } /* Púrpura */
+.btn-success { background: #2ecc71; } /* Verde */
+.btn-warning { background: #f39c12; } /* Naranja */
+
 /* Responsive */
 @media (max-width: 900px){
   .events-grid{ grid-template-columns: 1fr; }

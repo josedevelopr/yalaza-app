@@ -1,37 +1,58 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import Event from './Event';
-import eventImg01 from '../assets/img/evento1/banner.jpg';
-import eventImg02 from '../assets/img/evento2/banner.jpg';
+import { supabase } from '../lib/supabase';
 
 const EnabledEvents = () => {
-  const eventList = [
-    {
-      id: 1,
-      title: "Festival Nocturno Luz & Sonido",
-      image: eventImg01,
-      description: "Una experiencia inmersiva con música electrónica, visuales en 3D y espacios interactivos.",
-      btnClass: "primary"
-    },
-    {
-      id: 2,
-      title: "Concierto Acústico al Atardecer",
-      image: eventImg02,
-      description: "Una velada íntima con artistas emergentes en formato acústico, rodeada de naturaleza.",
-      btnClass: "success"
-    }
-  ];
+  const [events, setEvents] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchEvents = async () => {
+      try {
+        setLoading(true);
+        
+        // Consultamos eventos en estado ACTIVO o CONFIRMADO
+        const { data, error } = await supabase
+          .from('eventos')
+          .select('*')
+          .order('fecha_evento', { ascending: true });
+
+        if (error) throw error;
+        setEvents(data || []);
+      } catch (error) {
+        console.error('Error al obtener eventos:', error.message);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchEvents();
+  }, []);
+
+  if (loading) {
+    return (
+      <div className="wrap" style={{ textAlign: 'center', padding: '3rem' }}>
+        <div className="spinner"></div>
+        <p className="page-subtitle">Cargando experiencias en Yalaza...</p>
+      </div>
+    );
+  }
 
   return (
     <div className="wrap events-grid">
-      {eventList.map(item => (
-        <Event 
-          key={item.id}
-          title={item.title}
-          image={item.image}
-          description={item.description}
-          btnClass={item.btnClass}
-        />
-      ))}
+      {events.length > 0 ? (
+        events.map((item) => (
+          <Event 
+            key={item.id}
+           {...item} 
+          />
+        ))
+      ) : (
+        <div className="glass" style={{ gridColumn: '1 / -1', padding: '3rem', textAlign: 'center' }}>
+          <p className="page-subtitle">No hay eventos activos en este momento.</p>
+          <p className="small">¡Vuelve pronto para descubrir nuevas metas!</p>
+        </div>
+      )}
     </div>
   );
 };
