@@ -18,7 +18,7 @@ const CreateAccount = () => {
     telefono: '',
     pass: '',
     pass2: '',
-    rol: 'ORGANIZADOR',
+    rol: 'ASISTENTE',
     activo: true
   });
 
@@ -180,6 +180,7 @@ const CreateAccount = () => {
                   <option value="ADMIN">Administrador</option>
                   <option value="ORGANIZADOR">Organizador</option>
                   <option value="SOPORTE">Soporte</option>
+                  <option value="ASISTENTE">Asistente</option>
                 </select>
               </div>
               <div className="hint">Define qué pantallas podrá ver y qué acciones podrá realizar.</div>
