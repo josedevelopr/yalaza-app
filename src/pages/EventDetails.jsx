@@ -4,48 +4,9 @@ import "../assets/styles/event-details.css";
 import { useNavigate, useParams } from "react-router-dom";
 import { supabase } from "../lib/supabase";
 import { useAuth } from "../hooks/useAuth";
+import paymentQr from "../assets/img/yalaza-yape.jpeg";
 
 const EVENTOS_TABLE = "eventos";
-
-// Mock para etapa UI/UX sin BD
-const EVENTOS_MOCK = [
-  {
-    id: "11111111-1111-1111-1111-111111111111",
-    organizador_id: "99999999-9999-9999-9999-999999999999",
-    titulo: "Festival Indie Barranco",
-    descripcion:
-      "Un evento chill con bandas locales, visuales y una vibra bonita. Cupos limitados, llega temprano para buena ubicación.",
-    tipo: "POR_META",
-    estado: "ACTIVO",
-    min_quorum: 60,
-    max_aforo: 120,
-    precio: 35.0,
-    fecha_evento: "2026-03-10T20:00:00.000Z",
-    ubicacion: "Barranco, Lima",
-    ubicacion_url: "https://maps.google.com/?q=Barranco%2C%20Lima",
-    banner_url:
-      "https://images.unsplash.com/photo-1492684223066-81342ee5ff30?auto=format&fit=crop&w=1600&q=60",
-    created_at: "2026-02-01T12:00:00.000Z",
-  },
-  {
-    id: "22222222-2222-2222-2222-222222222222",
-    organizador_id: "99999999-9999-9999-9999-999999999999",
-    titulo: "Concierto Rock Miraflores",
-    descripcion:
-      "Rock en vivo con set potente, merch y zona de fotos. Ideal para ir en mancha.",
-    tipo: "DIRECTO",
-    estado: "CONFIRMADO",
-    min_quorum: 0,
-    max_aforo: 180,
-    precio: 50.0,
-    fecha_evento: "2026-04-05T01:00:00.000Z",
-    ubicacion: "Miraflores, Lima",
-    ubicacion_url: "https://maps.google.com/?q=Miraflores%2C%20Lima",
-    banner_url:
-      "https://images.unsplash.com/photo-1506157786151-b8491531f063?auto=format&fit=crop&w=1600&q=60",
-    created_at: "2026-02-05T12:00:00.000Z",
-  },
-];
 
 function formatMoney(value) {
   const n = Number(value ?? 0);
@@ -86,6 +47,8 @@ export default function EventDetails() {
   const [evento, setEvento] = useState(null);
   const [loadingEvento, setLoadingEvento] = useState(true);
   const [error, setError] = useState("");
+  // Estado para mostrar el QR antes de ir a la pantalla de carga de comprobante
+  const [showQr, setShowQr] = useState(false);
 
   useEffect(() => {
     const loadEvento = async () => {
@@ -102,13 +65,7 @@ export default function EventDetails() {
           .single();
 
         if (evErr || !data) {
-          const mock = EVENTOS_MOCK.find((e) => String(e.id) === String(eventoId));
-          if (!mock) {
-            setEvento(null);
-            setError("Evento no encontrado. Revisa el id en la URL.");
-          } else {
-            setEvento(mock);
-          }
+           setError("Evento no encontrado.");
         } else {
           setEvento(data);
         }
@@ -126,19 +83,23 @@ export default function EventDetails() {
   const handleComprar = () => {
     if (!user) {
         navigate("/login", {
-        state: { redirectTo: `/cliente/comprar/${evento.id}` }
+          state: { redirectTo: `/evento/${evento.id}` }
         });
         return;
     }
 
-    if(user.user_metadata.role != 'ASISTENTE')
-    {
-        alert('Tipo de usuario incorrecto.')
+    if(user.user_metadata.role !== 'ASISTENTE') {
+        alert('Solo los usuarios con rol ASISTENTE pueden comprar entradas.');
         return;
     }
 
+    // En lugar de navegar directo, mostramos el QR en esta misma vista
+    setShowQr(true);
+  };
+
+  const handleYaYapee = () => {
     navigate(`/cliente/comprar/${evento.id}`);
-    };
+  };
 
   const badge = useMemo(() => buildBadgeForEstado(evento?.estado), [evento?.estado]);
 
@@ -148,11 +109,7 @@ export default function EventDetails() {
     const aforo = Number(evento?.max_aforo ?? 0);
     const quorum = Number(evento?.min_quorum ?? 0);
 
-    return {
-      tipoLabel,
-      aforo,
-      quorum,
-    };
+    return { tipoLabel, aforo, quorum };
   }, [evento]);
 
   const quorumPercent = useMemo(() => {
@@ -168,22 +125,14 @@ export default function EventDetails() {
       <MainLayout>
         <div className="page">
           <div className="wrap">
-
             <div className="glass header">
               <div>
                 <h1 className="title">Cargando evento</h1>
                 <p className="subtitle">Un momento, YALAZA está preparando la info.</p>
               </div>
-              <div className="badge">Evento</div>
             </div>
-
             <div className="glass card" style={{ marginTop: 14 }}>
               <div className="skeleton-banner" />
-              <div className="skeleton-lines">
-                <div className="skeleton-line w70" />
-                <div className="skeleton-line w55" />
-                <div className="skeleton-line w80" />
-              </div>
             </div>
           </div>
         </div>
@@ -194,134 +143,107 @@ export default function EventDetails() {
   if (!evento) {
     return (
       <MainLayout>
-        <div className="page">
-          <div className="wrap">
-           
-
-            <div className="glass header">
-              <div>
-                <h1 className="title">Evento no encontrado</h1>
-                <p className="subtitle">{error || "Revisa el id en la URL."}</p>
-              </div>
-              <div className="badge danger">Error</div>
-            </div>
-
-            <div className="glass card" style={{ marginTop: 14 }}>
-              <div className="empty">
-                <div className="empty-title">No hay datos para mostrar</div>
-                <div className="actions" style={{ marginTop: 14 }}>
-                  <button className="btn primary" type="button" onClick={() => navigate("/")}>
-                    Ir al inicio
-                  </button>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
+        <div className="page"><div className="wrap"><h1 className="title">Evento no encontrado</h1></div></div>
       </MainLayout>
     );
   }
-
-  const banner = evento.banner_url || "";
 
   return (
     <MainLayout>
       <div className="page">
         <div className="wrap">
-       
-
           <div className="glass header">
             <div>
               <h1 className="title">{safeText(evento.titulo)}</h1>
               <p className="subtitle">
-                {safeText(evento.descripcion) || "Este evento aún no tiene descripción."}
+                {showQr 
+                  ? "Escanea el código QR para realizar el pago de tu entrada." 
+                  : (safeText(evento.descripcion) || "Este evento aún no tiene descripción.")}
               </p>
             </div>
-
             <div className={`badge ${badge.cls}`}>{badge.text}</div>
           </div>
 
           <div className="grid details-grid">
             <div className="glass card">
-              <h2 className="section-title">Detalle del evento</h2>
-
-              <div className="banner">
-                {banner ? (
-                  <img src={banner} alt="Banner del evento" />
-                ) : (
-                  <div className="banner-fallback">
-                    <div className="banner-icon">🎟️</div>
-                    <div className="banner-text">Banner no disponible</div>
+              {!showQr ? (
+                <>
+                  <h2 className="section-title">Detalle del evento</h2>
+                  <div className="banner">
+                    {evento.banner_url ? (
+                      <img src={evento.banner_url} alt="Banner del evento" />
+                    ) : (
+                      <div className="banner-fallback">🎟️</div>
+                    )}
                   </div>
-                )}
-              </div>
 
-              <div className="meta-cards">
-                <div className="mini">
-                  <div className="mini-k">Fecha</div>
-                  <div className="mini-v">{formatDateTime(evento.fecha_evento)}</div>
-                </div>
-                <div className="mini">
-                  <div className="mini-k">Precio</div>
-                  <div className="mini-v">{formatMoney(evento.precio)}</div>
-                </div>
-                <div className="mini">
-                  <div className="mini-k">Tipo</div>
-                  <div className="mini-v">{meta.tipoLabel}</div>
-                </div>
-              </div>
+                  <div className="meta-cards">
+                    <div className="mini">
+                      <div className="mini-k">Fecha</div>
+                      <div className="mini-v">{formatDateTime(evento.fecha_evento)}</div>
+                    </div>
+                    <div className="mini">
+                      <div className="mini-k">Precio</div>
+                      <div className="mini-v">{formatMoney(evento.precio)}</div>
+                    </div>
+                  </div>
 
-              <div className="place">
-                <div className="place-left">
-                  <div className="place-k">Ubicación</div>
-                  <div className="place-v">{safeText(evento.ubicacion)}</div>
-                </div>
+                  <div className="place">
+                    <div className="place-left">
+                      <div className="place-k">Ubicación</div>
+                      <div className="place-v">{safeText(evento.ubicacion)}</div>
+                    </div>
+                    {evento.ubicacion_url && (
+                      <a className="btn primary" href={evento.ubicacion_url} target="_blank" rel="noreferrer">Ver mapa</a>
+                    )}
+                  </div>
 
-                {evento.ubicacion_url ? (
-                  <a className="btn primary" href={evento.ubicacion_url} target="_blank" rel="noreferrer">
-                    Ver mapa
-                  </a>
-                ) : (
-                  <button className="btn disabled" type="button" disabled>
-                    Ver mapa
-                  </button>
-                )}
-              </div>
-
-              <div className="pills-row">
-                <span className="pill">Aforo: {meta.aforo || 0}</span>
-                <span className="pill">Quórum mínimo: {meta.quorum || 0}</span>
-                {/* <span className="pill">Creado: {formatDateTime(evento.created_at)}</span> */}
-              </div>
-
-              {String(evento.tipo || "").toUpperCase() === "POR_META" && (
-                <div className="quorum">
-                  <div className="quorum-head">
-                    <div>
-                      <div className="quorum-title">Modo por meta</div>
-                      <div className="quorum-sub">
-                        Este evento busca llegar al quórum mínimo antes de confirmarse.
+                  {evento.tipo === "POR_META" && (
+                    <div className="quorum">
+                      <div className="quorum-head">
+                        <div className="quorum-title">Modo por meta ({quorumPercent}%)</div>
+                      </div>
+                      <div className="progress">
+                        <div className="progress-bar" style={{ width: `${quorumPercent}%` }} />
                       </div>
                     </div>
-                    <div className="badge ghost">{quorumPercent}%</div>
+                  )}
+
+                  <div className="actions" style={{ marginTop: 24 }}>
+                    <button className="btn success" type="button" onClick={handleComprar} style={{ width: '100%' }}>
+                      Comprar entradas
+                    </button>
                   </div>
-                  <div className="progress">
-                    <div className="progress-bar" style={{ width: `${quorumPercent}%` }} />
+                </>
+              ) : (
+                <div className="payment-qr-container" style={{ textAlign: "center", padding: "20px 0" }}>
+                  <h2 className="section-title">Pago con Yape</h2>
+                  
+                  <div className="qr-frame" style={{ 
+                    background: "white", 
+                    padding: "15px", 
+                    borderRadius: "20px", 
+                    display: "inline-block",
+                    margin: "20px 0" 
+                  }}>
+                    <img src={paymentQr} alt="QR de Pago" style={{ width: "260px", display: "block" }} />
                   </div>
-                  {/* <div className="hint">
-                    Referencia rápida: quórum dividido entre aforo total.
-                  </div> */}
+
+                  <div className="payment-info" style={{ marginBottom: 30 }}>
+                    <p style={{ fontSize: "1.1rem", marginBottom: 10 }}>Monto a pagar:</p>
+                    <p style={{ fontSize: "2rem", fontWeight: "bold", color: "#742284" }}>{formatMoney(evento.precio)}</p>
+                  </div>
+
+                  <div className="actions" style={{ display: "flex", gap: "12px", flexDirection: "column" }}>
+                    <button className="btn success" onClick={handleYaYapee}>
+                      Ya yapeé, subir comprobante
+                    </button>
+                    <button className="btn ghost" onClick={() => setShowQr(false)}>
+                      Cancelar
+                    </button>
+                  </div>
                 </div>
               )}
-
-              <div className="actions">
-                {/* <button className="btn ghost" type="button" onClick={() => navigate(`/eventos/${evento.id}/viabilidad`)}>
-                  Ver viabilidad
-                </button> */}
-                <button className="btn success" type="button" onClick={handleComprar} >
-                  Comprar entradas
-                </button>
-              </div>
             </div>
           </div>
         </div>

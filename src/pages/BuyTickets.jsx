@@ -218,16 +218,7 @@ export default function BuyTickets() {
 
               <h2 className="section-title" style={{ marginTop: 20 }}>Datos de pago</h2>
               <div className="form-grid">
-                <div className="field">
-                  <label>Método</label>
-                  <select className="select" value={metodo} onChange={(e) => setMetodo(e.target.value)}>
-                    <option value="YAPE">Yape</option>
-                    <option value="PLIN">Plin</option>
-                    <option value="TRANSFERENCIA">Transferencia</option>
-                  </select>
-                </div>
-
-                <div className="field">
+                <div className="field full ">
                   <label>Monto (S/.)</label>
                   <input className="input" type="number" value={monto} disabled />
                 </div>
