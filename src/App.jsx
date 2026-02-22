@@ -9,6 +9,7 @@ import BuyTickets from './pages/BuyTickets';
 import WatchAllEvents from './pages/WatchAllEvents';
 import EventDetails from './pages/EventDetails';
 import WatchMyTickets  from './pages/WatchMyTickets';
+import Dashboard from './pages/Dashboard';
 import { USER_ROLES } from './constants/roles';
 
 function App() {
@@ -59,6 +60,15 @@ function App() {
               <EventDetails />
           } 
         />         
+
+      <Route 
+          path="/dashboard" 
+          element={
+            <ProtectedRoute allowedRoles={[USER_ROLES.SOPORTE, USER_ROLES.ADMIN]}>
+              <Dashboard />
+            </ProtectedRoute>
+          } 
+        />
       </Routes>
     </Router>
   );

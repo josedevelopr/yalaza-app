@@ -225,7 +225,7 @@ export default function BuyTickets() {
 
                 <div className="field full">
                   <label>Evidencia (captura de pantalla)</label>
-                  <input className="file" type="file" accept="image/*" onChange={onFileChange} />
+                  <input className="file" type="file" accept="image/jpeg, image/png, image/webp" onChange={onFileChange} />
                   {previewUrl && (
                     <div className="preview">
                       <img src={previewUrl} alt="Vista previa" />

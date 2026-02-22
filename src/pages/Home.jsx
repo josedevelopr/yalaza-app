@@ -42,6 +42,8 @@ const Home = () => {
   // Obtenemos el rol de forma segura para la lógica de visualización
   const userRole = session?.user?.user_metadata?.role;
   const isOrganizerOrAdmin = userRole === USER_ROLES.ORGANIZADOR || userRole === USER_ROLES.ADMIN;
+  const isAdminOrSupport = userRole === USER_ROLES.ADMIN || userRole === USER_ROLES.SUPPORT;
+
 
   return (
     <div className="wrap">
@@ -49,6 +51,10 @@ const Home = () => {
         <header>
           <div className="brand">YALAZA</div>
           <div className="header-actions">
+            { isAdminOrSupport ? (
+              <Link to="/dashboard" className="btn primary">Administrar</Link>
+            ): 
+                <Link to="/mis-tickets" className="btn primary">Mis tickets</Link>}    
             {/* Botón "Ver eventos" visible para todos para fomentar el descubrimiento */}
               <Link to="/eventos" className="btn primary">Ver Eventos</Link>
 
