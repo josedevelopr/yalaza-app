@@ -1,5 +1,4 @@
 import MainLayout from "../layouts/MainLayout";
-import "../assets/styles/buy-tickets.css";
 import React, { useMemo, useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import QRCode from "qrcode";

@@ -11,6 +11,8 @@ import EventDetails from './pages/EventDetails';
 import WatchMyTickets  from './pages/WatchMyTickets';
 import Dashboard from './pages/Dashboard';
 import { USER_ROLES } from './constants/roles';
+import ManageEvents from './pages/ManageEvents';
+import ManagePayments from './pages/ManagePayments';
 
 function App() {
   return (
@@ -66,6 +68,22 @@ function App() {
           element={
             <ProtectedRoute allowedRoles={[USER_ROLES.SOPORTE, USER_ROLES.ADMIN]}>
               <Dashboard />
+            </ProtectedRoute>
+          } 
+        />
+        <Route
+          path="/admin/eventos"
+          element={
+            <ProtectedRoute allowedRoles={[USER_ROLES.ADMIN]}>
+              <ManageEvents />
+            </ProtectedRoute>
+          } 
+        />
+        <Route
+          path="/admin/pagos"
+          element={
+            <ProtectedRoute allowedRoles={[USER_ROLES.ADMIN]}>
+              <ManagePayments />
             </ProtectedRoute>
           } 
         />
