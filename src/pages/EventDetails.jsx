@@ -173,7 +173,7 @@ export default function EventDetails() {
             <div className={`badge ${badge.cls}`}>{badge.text}</div>
           </div>
 
-          <div className="grid details-grid">
+          <div  style={{marginTop: 14 +'px'}}>
             <div className="glass card">
               {!showQr ? (
                 <>
