@@ -53,9 +53,10 @@ const Home = () => {
               <Link to="/eventos" className="btn primary">Ver Eventos</Link>
 
             {/* Solo mostramos "Crea un Evento" si NO es Asistente (Organizador/Admin) */}
-            { isOrganizerOrAdmin && (
+            { isOrganizerOrAdmin ? (
               <Link to="/organizador/crear" className="btn primary">Crea un Evento</Link>
-            )}            
+            ): 
+                <Link to="/mis-tickets" className="btn primary">Mis tickets</Link>}            
             
             {session ? (
               <>
