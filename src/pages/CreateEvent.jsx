@@ -150,7 +150,8 @@ const CreateEvent = () => {
                 <label>Fecha y Hora</label>
                 <input 
                   className="input" 
-                  type="datetime-local" 
+                  type="datetime-local" // Este campo permite elegir hora y fecha simultáneamente
+                  step="60" // Incrementos de 1 minuto
                   onChange={(e) => setFormData({...formData, fecha_evento: e.target.value})}
                   required 
                 />
