@@ -4,7 +4,6 @@ import React, { useMemo, useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import QRCode from "qrcode";
 import { supabase } from "../lib/supabase";
-import { useAuth } from "../hooks/useAuth";
 
 const BUCKET_EVIDENCIAS = "evidencias";
 
@@ -17,24 +16,24 @@ const EVENTOS_MOCK = [
     id: "11111111-1111-1111-1111-111111111111",
     titulo: "Festival Indie Barranco",
     precio: 35,
-    ubicacion: "Barranco",
-    fecha_evento: "2026-03-10",
+    zona: "Barranco",
+    fecha: "2026-03-10",
   },
   {
     id: "22222222-2222-2222-2222-222222222222",
     titulo: "Concierto Rock Miraflores",
     precio: 50,
-    ubicacion: "Miraflores",
-    fecha_evento: "2026-04-05",
+    zona: "Miraflores",
+    fecha: "2026-04-05",
   },
 ];
 
 export default function BuyTickets() {
   const { eventoId } = useParams();
-  const { user } = useAuth();
   const navigate = useNavigate();
 
-  let usuarioId = '111111-111111-1111';
+  // Si aún no tienes auth, deja un UUID real de tu tabla usuarios para probar inserts
+  const usuarioId = "11111111-1111-1111-1111-111111111111"//"PON_AQUI_UN_UUID_REAL_DE_USUARIO";
 
   const [evento, setEvento] = useState(null);
   const [loadingEvento, setLoadingEvento] = useState(true);
@@ -57,7 +56,7 @@ export default function BuyTickets() {
         // 1) Intentar Supabase primero
         const { data, error: evErr } = await supabase
           .from(EVENTOS_TABLE)
-          .select("id, titulo, precio, ubicacion, fecha_evento")
+          .select("id, titulo, precio, zona, fecha")
           .eq("id", eventoId)
           .single();
 
@@ -86,15 +85,8 @@ export default function BuyTickets() {
   }, [eventoId]);
 
   const disabled = useMemo(() => {
-    return (
-      !evento?.id ||
-      !usuarioId ||
-      !archivo ||
-      !monto ||
-      monto <= 0 ||
-      ticketCreado
-    );
-  }, [evento?.id, usuarioId, archivo, monto, ticketCreado]);
+    return !evento?.id || !usuarioId || !archivo || !monto || monto <= 0;
+  }, [evento?.id, usuarioId, archivo, monto]);
 
   const onFileChange = (e) => {
     const f = e.target.files?.[0];
@@ -136,9 +128,6 @@ export default function BuyTickets() {
 
   const handleComprar = async () => {
     try {
-
-      usuarioId = user.id;
-
       setError("");
       setLoading(true);
       setLoadingMsg("Subiendo evidencia...");
@@ -204,7 +193,6 @@ export default function BuyTickets() {
 
       setLoading(false);
     } catch (e) {
-      console.log(e)
       setLoading(false);
       setError(e?.message || "Ocurrió un error inesperado.");
     }
@@ -234,6 +222,20 @@ export default function BuyTickets() {
     <MainLayout>
       <div className="page">
         <div className="wrap">
+          <div className="glass topbar">
+            <div className="brand">
+              <span className="brand-dot" />
+              YALAZA
+            </div>
+            <div className="top-actions">
+              <button className="btn ghost" type="button" onClick={() => navigate(-1)}>
+                Volver
+              </button>
+              <button className="btn primary" type="button" onClick={() => navigate(`/eventos/${evento.id}`)}>
+                Ver evento
+              </button>
+            </div>
+          </div>
 
           <div className="glass header">
             <div>
@@ -284,6 +286,7 @@ export default function BuyTickets() {
                     value={evento?.precio ?? 0}
                     disabled
                   />
+                  {/* <div className="hint">Debe coincidir con el precio o lo acordado por el organizador.</div> */}
                 </div>
 
                 <div className="field full">
@@ -356,31 +359,15 @@ export default function BuyTickets() {
                   </div>
 
                   <div className="ticket-actions">
-                    {/* <a className="btn primary" href={ticketCreado.evidenciaUrl} target="_blank" rel="noreferrer">
+                    <a className="btn primary" href={ticketCreado.evidenciaUrl} target="_blank" rel="noreferrer">
                       Ver evidencia
-                    </a> */}
+                    </a>
                     <button className="btn warning" type="button" onClick={() => window.print()}>
                       Imprimir
                     </button>
                   </div>
                 </div>
               )}
-
-{!ticketCreado ? (
-
-<button className="btn ghost" type="button" onClick={() => navigate(-1)}>
-                Volver
-              </button>
-
-) : (
-  <button className="btn ghost" type="button" onClick={() => navigate(`/`)}>
-                Salir
-              </button>
-)}
-              
-              <button className="btn primary" type="button" onClick={() => navigate(`/evento/${evento.id}`)}>
-                Ver evento
-              </button>
             </div>
           </div>
         </div>

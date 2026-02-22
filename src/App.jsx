@@ -6,6 +6,7 @@ import CreateEvent from './pages/CreateEvent';
 import CheckViability from './pages/CheckViability';
 import ProtectedRoute from './components/ProtectedRoute'; // Importar el protector
 import BuyTickets from './pages/BuyTickets';
+import EventDetails from './pages/EventDetails';
 
 function App() {
   return (
@@ -38,6 +39,12 @@ function App() {
               <BuyTickets />
           } 
         /> 
+        <Route 
+          path="/evento/:eventoId" 
+          element={
+              <EventDetails />
+          } 
+        />         
       </Routes>
     </Router>
   );
