@@ -22,7 +22,7 @@ const ProtectedRoute = ({ children, allowedRoles = [] }) => {
 
   // 2. Verificar si la ruta requiere roles específicos
   // Comparamos el rol del perfil obtenido de la tabla public.perfiles
-  if (allowedRoles.length > 0 && !allowedRoles.includes(profile?.rol)) {
+  if (allowedRoles.length > 0 && !allowedRoles.includes(user?.user_metadata?.role)) {
     return <Navigate to="/" replace />; // Redirigir al home si no tiene permiso
   }
 

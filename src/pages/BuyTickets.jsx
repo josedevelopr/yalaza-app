@@ -15,6 +15,8 @@ export default function BuyTickets() {
   const { user } = useAuth();
   const navigate = useNavigate();
 
+  let usuarioId = '111111-111111-1111';
+
   const [evento, setEvento] = useState(null);
   const [loadingEvento, setLoadingEvento] = useState(true);
 
@@ -39,8 +41,9 @@ export default function BuyTickets() {
           .select("id, titulo, precio, ubicacion, fecha_evento")
           .eq("id", eventoId)
           .single();
-        setEvento(data);
-        setMonto(Number(data?.precio ?? 0));
+        
+          setEvento(data);
+          setMonto(Number(data?.precio ?? 0));
       } catch (e) {
         setEvento(null);
       } finally {

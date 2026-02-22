@@ -124,7 +124,6 @@ export default function EventDetails() {
   }, [eventoId]);
 
   const handleComprar = () => {
-    console.log(user);
     if (!user) {
         navigate("/login", {
         state: { redirectTo: `/cliente/comprar/${evento.id}` }
