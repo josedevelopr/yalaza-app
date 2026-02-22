@@ -171,8 +171,6 @@ label{ font-size:13px; color:#334155; font-weight:900; }
 .btn.ghost{
   background: rgba(255,255,255,.75);
   color:#111827;
-  border:1px solid rgba(0,0,0,.06);
-  box-shadow: 0 6px 16px rgba(0,0,0,.06);
 }
 .btn.disabled{
   opacity:.55;
