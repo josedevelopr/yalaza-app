@@ -10,31 +10,10 @@ const BUCKET_EVIDENCIAS = "evidencias";
 
 // Cambia si tu tabla tiene otro nombre
 const EVENTOS_TABLE = "eventos";
-
-// Para probar rápido si aún no tienes tabla eventos lista
-const EVENTOS_MOCK = [
-  {
-    id: "11111111-1111-1111-1111-111111111111",
-    titulo: "Festival Indie Barranco",
-    precio: 35,
-    ubicacion: "Barranco",
-    fecha_evento: "2026-03-10",
-  },
-  {
-    id: "22222222-2222-2222-2222-222222222222",
-    titulo: "Concierto Rock Miraflores",
-    precio: 50,
-    ubicacion: "Miraflores",
-    fecha_evento: "2026-04-05",
-  },
-];
-
 export default function BuyTickets() {
   const { eventoId } = useParams();
   const { user } = useAuth();
   const navigate = useNavigate();
-
-  let usuarioId = '111111-111111-1111';
 
   const [evento, setEvento] = useState(null);
   const [loadingEvento, setLoadingEvento] = useState(true);
@@ -60,21 +39,8 @@ export default function BuyTickets() {
           .select("id, titulo, precio, ubicacion, fecha_evento")
           .eq("id", eventoId)
           .single();
-
-        debugger;
-        if (evErr) {
-          // 2) Fallback mock si no existe tabla o no hay data aún
-          const mock = EVENTOS_MOCK.find((e) => String(e.id) === String(eventoId));
-          if (!mock) {
-            setEvento(null);
-          } else {
-            setEvento(mock);
-            setMonto(Number(mock.precio ?? 0));
-          }
-        } else {
-          setEvento(data);
-          setMonto(Number(data?.precio ?? 0));
-        }
+        setEvento(data);
+        setMonto(Number(data?.precio ?? 0));
       } catch (e) {
         setEvento(null);
       } finally {

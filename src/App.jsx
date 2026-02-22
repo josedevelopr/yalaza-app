@@ -8,6 +8,7 @@ import ProtectedRoute from './components/ProtectedRoute'; // Importar el protect
 import BuyTickets from './pages/BuyTickets';
 import WatchAllEvents from './pages/WatchAllEvents';
 import EventDetails from './pages/EventDetails';
+import { USER_ROLES } from './constants/roles';
 
 function App() {
   return (
@@ -22,7 +23,7 @@ function App() {
         <Route 
           path="/viabilidad" 
           element={
-            <ProtectedRoute>
+            <ProtectedRoute allowedRoles={[USER_ROLES.ORGANIZADOR, USER_ROLES.SOPORTE, USER_ROLES.ADMIN]}>
               <CheckViability />
             </ProtectedRoute>
           } 
@@ -30,7 +31,7 @@ function App() {
         <Route 
           path="/organizador/crear" 
           element={
-            <ProtectedRoute>
+            <ProtectedRoute allowedRoles={[USER_ROLES.ORGANIZADOR, USER_ROLES.SOPORTE, USER_ROLES.ADMIN]}>
               <CreateEvent />
             </ProtectedRoute>
           } 
@@ -38,7 +39,9 @@ function App() {
         <Route 
           path="/cliente/comprar/:eventoId" 
           element={
+            <ProtectedRoute allowedRoles={[USER_ROLES.ASISTENTE]}>
               <BuyTickets />
+            </ProtectedRoute>
           } 
         /> 
         <Route 

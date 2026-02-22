@@ -17,7 +17,7 @@ const Event = ({
   const tipoSeguro = tipo || "DIRECTO";
   const displayImage = banner_url || (tipoSeguro === 'POR_META' ? defaultMetaImg : defaultDirectImg);
   
-  const getButtonStyles = () => {
+  const getPurchaseButton = () => {
     const link = `/evento/${id}`;
 
     if (tipoSeguro === 'POR_META') {
@@ -56,7 +56,7 @@ const Event = ({
     };
   };
 
-  const { className: btnClass, text: btnText, link: btnLink  } = getButtonStyles();
+  const { className: btnClass, text: btnText, link: btnLink  } = getPurchaseButton();
   const tagText = tipoSeguro === 'POR_META' ? 'Validando Demanda' : 'Venta Directa';
   const navigate = useNavigate();
 
@@ -80,8 +80,7 @@ const Event = ({
         </div>
         
         <h3 className="event-title">{titulo}</h3>
-        
-        {/* Espacio reservado para la descripción */}
+      
         <div className="description-container">
           <p className="event-description">
             {descripcion?.length > 200 ? `${descripcion.substring(0, 200)}...` : descripcion}
