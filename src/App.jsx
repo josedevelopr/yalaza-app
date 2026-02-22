@@ -6,6 +6,7 @@ import CreateEvent from './pages/CreateEvent';
 import CheckViability from './pages/CheckViability';
 import ProtectedRoute from './components/ProtectedRoute'; // Importar el protector
 import BuyTickets from './pages/BuyTickets';
+import WatchAllEvents from './pages/WatchAllEvents';
 
 function App() {
   return (
@@ -14,6 +15,7 @@ function App() {
         <Route path="/" element={<Home />} />
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<CreateAccount />} />
+        <Route path="/eventos" element={<WatchAllEvents />} />
         
         {/* Rutas Protegidas */}
         <Route 

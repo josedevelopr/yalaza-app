@@ -1,0 +1,86 @@
+.events-catalog-grid {
+  display: grid;
+  /* Grilla dinámica que ajusta columnas según el ancho */
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 30px;
+  width: 100%;
+}
+
+/* Optimización para el contenedor principal de la página */
+.page-container {
+  min-height: 100vh;
+  background-color: var(--bg-dark); /* El fondo oscuro de Yalaza */
+}
+
+
+/* --- Navegación de Categorías Minimalista --- */
+.categories-bar-sticky {
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  padding: 20px 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.category-inner {
+  display: flex;
+  gap: 30px; /* Espaciado limpio entre textos */
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+
+.category-inner::-webkit-scrollbar {
+  display: none;
+}
+
+/* Estilo de Ítem (Texto) */
+.category-item {
+  background: none;
+  border: none;
+  padding: 8px 0;
+  font-size: 0.85rem;
+  font-weight: 600;
+  letter-spacing: 0.8px;
+  cursor: pointer;
+  text-transform: uppercase;
+  transition: all 0.3s ease;
+  /* Color plomo por defecto */
+  color: #888888; 
+  position: relative;
+  white-space: nowrap;
+}
+
+/* Efecto Hover */
+.category-item:hover {
+  color: #ffffff;
+}
+
+/* Estado Activo: Morado Yalaza */
+.category-item.active {
+  color: #7C4DFF;
+}
+
+/* Indicador inferior minimalista para el activo */
+.category-item.active::after {
+  content: '';
+  position: absolute;
+  bottom: -2px;
+  left: 0;
+  width: 100%;
+  height: 2px;
+  background-color: #7C4DFF;
+  border-radius: 2px;
+  box-shadow: 0 0 10px rgba(124, 77, 255, 0.5);
+}
+/* Animación de entrada */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Media query para asegurar que en móviles no se rompa la simetría */
+@media (max-width: 480px) {
+  .events-catalog-grid {
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+}

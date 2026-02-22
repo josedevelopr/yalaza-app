@@ -10,7 +10,7 @@ import CreateEventBanner from '../components/CreateEventBanner';
 import OrganizerReviews from '../components/OrganizerReviews';
 import FrequentAnswerAndQuestions from '../components/FrequentAnswerAndQuestions';
 import Footer from '../components/Footer';
-import {USER_ROLES} from '../constants/roles';
+import { USER_ROLES } from '../constants/roles';
 
 const Home = () => {
   const navigate = useNavigate();
@@ -39,7 +39,9 @@ const Home = () => {
   };
 
   const userInitial = session?.user?.user_metadata?.first_name?.charAt(0).toUpperCase() || 'U';
-  const isUserRoleAssistant = session?.user?.user_metadata?.role == USER_ROLES.ASISTENTE;
+  // Obtenemos el rol de forma segura para la lógica de visualización
+  const userRole = session?.user?.user_metadata?.role;
+  const isOrganizerOrAdmin = userRole === USER_ROLES.ORGANIZADOR || userRole === USER_ROLES.ADMIN;
 
   return (
     <div className="wrap">
@@ -47,7 +49,14 @@ const Home = () => {
         <header>
           <div className="brand">YALAZA</div>
           <div className="header-actions">
-            { isUserRoleAssistant ? <></> : <><Link to="/organizador/crear" className="btn primary">Crea un Evento</Link></>}            
+            {/* Botón "Ver eventos" visible para todos para fomentar el descubrimiento */}
+              <Link to="/eventos" className="btn primary">Ver Eventos</Link>
+
+            {/* Solo mostramos "Crea un Evento" si NO es Asistente (Organizador/Admin) */}
+            { isOrganizerOrAdmin && (
+              <Link to="/organizador/crear" className="btn primary">Crea un Evento</Link>
+            )}            
+            
             {session ? (
               <>
                 <button onClick={handleLogout} className="btn danger">Cerrar Sesión</button>
@@ -70,6 +79,7 @@ const Home = () => {
           </div>
         </div>
         
+        {/* ... resto del componente (steps, etc) */}
         <div className="steps">
           <div className="step">
             <div className="step-number">1</div>
@@ -85,6 +95,7 @@ const Home = () => {
           </div>
         </div>
       </div>
+      
       <EnabledEvents />
       <CreateEventBanner />
       <OrganizerReviews />
