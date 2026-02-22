@@ -44,6 +44,7 @@ const Header = () => {
 
         <div className="top-actions" style={{ display: 'flex', alignItems: 'center' }}>
           <Link className="btn ghost" to="/">Inicio</Link>
+          <Link className="btn ghost" to="/eventos">Ver eventos</Link>
 
           {session ? (
             <>

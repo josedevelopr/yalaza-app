@@ -2,14 +2,14 @@ import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import '../assets/styles/login.css';
 import MainLayout from '../layouts/MainLayout';
-import { useAuth } from '../hooks/useAuth'; // Usamos el hook que creamos
+import { useAuth } from '../hooks/useAuth';
 
 const Login = () => {
   const navigate = useNavigate();
   const { signIn } = useAuth();
   const [loading, setLoading] = useState(false);
+  const [errorMsg, setErrorMsg] = useState(null); // Estado para el mensaje de error
 
-  // 1. Estado para las credenciales
   const [formData, setFormData] = useState({
     email: '',
     pass: ''
@@ -17,20 +17,27 @@ const Login = () => {
 
   const handleChange = (e) => {
     const { id, value } = e.target;
+    // Limpiamos el error cuando el usuario vuelve a escribir
+    if (errorMsg) setErrorMsg(null);
     setFormData(prev => ({ ...prev, [id]: value }));
   };
 
-  // 2. Lógica de inicio de sesión
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
+    setErrorMsg(null);
 
     try {
       await signIn(formData.email, formData.pass);
-      // Si el login es exitoso, redirigimos al dashboard o inicio
       navigate('/'); 
     } catch (error) {
-      alert('Error al ingresar: ' + error.message);
+      // Identificación del tipo de error
+      if (error.message.includes('Invalid login credentials') || error.status === 400) {
+        setErrorMsg('El correo o la contraseña son incorrectos. Por favor, verifica tus datos.');
+      } else {
+        setErrorMsg('Hubo un problema con la plataforma. Por favor, inténtalo de nuevo en unos momentos.');
+      }
+      console.error('Login Error:', error);
     } finally {
       setLoading(false);
     }
@@ -45,6 +52,14 @@ const Login = () => {
             <p className="page-subtitle">Bienvenido de nuevo a Yalaza.</p>
           </div>
 
+          {/* Banner de error dinámico */}
+          {errorMsg && (
+            <div className="error-banner">
+              <span className="error-icon">⚠️</span>
+              <p>{errorMsg}</p>
+            </div>
+          )}
+
           <form onSubmit={handleSubmit}>
             <div className="form-grid" style={{ gridTemplateColumns: '1fr' }}>
               
@@ -54,7 +69,7 @@ const Login = () => {
                   <MailIcon />
                   <input 
                     id="email" 
-                    className="input" 
+                    className={`input ${errorMsg ? 'input-error' : ''}`}
                     type="email" 
                     placeholder="ejemplo@correo.com" 
                     value={formData.email}
@@ -70,7 +85,7 @@ const Login = () => {
                   <LockIcon />
                   <input 
                     id="pass" 
-                    className="input" 
+                    className={`input ${errorMsg ? 'input-error' : ''}`}
                     type="password" 
                     placeholder="Ingresa tu contraseña" 
                     value={formData.pass}
