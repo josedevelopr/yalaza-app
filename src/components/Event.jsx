@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import defaultMetaImg from '../assets/img/event-venta-por-meta.png';
 import defaultDirectImg from '../assets/img/event-venta-directa.png';
 import { useNavigate } from "react-router-dom";
@@ -15,50 +15,36 @@ const Event = ({
 }) => {
   
   const tipoSeguro = tipo || "DIRECTO";
-  const displayImage = banner_url || (tipoSeguro === 'POR_META' ? defaultMetaImg : defaultDirectImg);
-  
+  const navigate = useNavigate();
+
+  // 1. Definimos las imágenes por defecto según el tipo de evento
+  const defaultImg = tipoSeguro === 'POR_META' ? defaultMetaImg : defaultDirectImg;
+
+  // 2. Estado para manejar errores de carga de la imagen (fallback)
+  // Si banner_url existe pero falla al cargar, usaremos la imagen por defecto
+  const [imgSrc, setImgSrc] = useState(banner_url || defaultImg);
+
   const getPurchaseButton = () => {
     const link = `/evento/${id}`;
 
     if (tipoSeguro === 'POR_META') {
-      return {
-        className: 'btn-warning',
-        text: 'Prerreservar',
-        link
-      };
+      return { className: 'btn-warning', text: 'Prerreservar', link };
     }
 
     const tituloLower = titulo.toLowerCase();
-
     if (tituloLower.includes('festival')) {
-      return {
-        className: 'btn-primary',
-        text: 'Comprar Entrada',
-        link
-      };
+      return { className: 'btn-primary', text: 'Comprar Entrada', link };
     }
 
-    if (
-      tituloLower.includes('concierto') ||
-      tituloLower.includes('acústico')
-    ) {
-      return {
-        className: 'btn-success',
-        text: 'Comprar Entrada',
-        link
-      };
+    if (tituloLower.includes('concierto') || tituloLower.includes('acústico')) {
+      return { className: 'btn-success', text: 'Comprar Entrada', link };
     }
 
-    return {
-      className: 'btn-primary',
-      text: 'Comprar Entrada',
-      link
-    };
+    return { className: 'btn-primary', text: 'Comprar Entrada', link };
   };
 
   const { className: btnClass, text: btnText, link: btnLink  } = getPurchaseButton();
   const tagText = tipoSeguro === 'POR_META' ? 'Validando Demanda' : 'Venta Directa';
-  const navigate = useNavigate();
 
   const fechaFormateada = fecha_evento 
     ? new Date(fecha_evento).toLocaleDateString('es-PE', {
@@ -69,7 +55,12 @@ const Event = ({
   return (
     <div className="card glass">
       <div className="card-image">
-        <img src={displayImage} alt={titulo} />
+        <img 
+          src={imgSrc} 
+          alt={titulo} 
+          // 3. Si la URL del banner falla (por permisos o error de red), cargamos la default
+          onError={() => setImgSrc(defaultImg)} 
+        />
         <div className={`event-tag ${tipoSeguro.toLowerCase()}`}>{tagText}</div>
       </div>
       
@@ -88,17 +79,7 @@ const Event = ({
         </div>
         
         <div className="event-location">
-          <svg 
-            width="14" 
-            height="14" 
-            viewBox="0 0 24 24" 
-            fill="none" 
-            stroke="currentColor" 
-            strokeWidth="2.5" 
-            strokeLinecap="round" 
-            strokeLinejoin="round" 
-            className="icon-location"
-          >
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="icon-location">
             <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
             <circle cx="12" cy="10" r="3"></circle>
           </svg>
