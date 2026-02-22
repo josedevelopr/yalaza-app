@@ -177,27 +177,15 @@ const CreateAccount = () => {
                   value={formData.rol}
                   onChange={handleChange}
                 >
-                  <option value="ADMIN">Administrador</option>
                   <option value="ORGANIZADOR">Organizador</option>
-                  <option value="SOPORTE">Soporte</option>
                   <option value="ASISTENTE">Asistente</option>
                 </select>
               </div>
-              <div className="hint">Define qué pantallas podrá ver y qué acciones podrá realizar.</div>
             </div>
 
             </div>
 
             <div className="row">
-              <label className="checkbox">
-                <input 
-                  id="activo"
-                  type="checkbox" 
-                  checked={formData.activo}
-                  onChange={handleChange} 
-                />
-                Usuario activo
-              </label>
 
               <div className="actions">
                 <button type="button" className="btn ghost" onClick={() => navigate(-1)}>

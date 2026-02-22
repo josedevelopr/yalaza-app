@@ -52,9 +52,10 @@ const Home = () => {
           <div className="brand">YALAZA</div>
           <div className="header-actions">
             { isAdminOrSupport ? (
+              session ? 
               <Link to="/dashboard" className="btn primary">Administrar</Link>
-            ): 
-                <Link to="/mis-tickets" className="btn primary">Mis tickets</Link>}    
+              : <></>
+            ): <></>}    
             {/* Botón "Ver eventos" visible para todos para fomentar el descubrimiento */}
               <Link to="/eventos" className="btn primary">Ver Eventos</Link>
 
@@ -62,7 +63,9 @@ const Home = () => {
             { isOrganizerOrAdmin ? (
               <Link to="/organizador/crear" className="btn primary">Crea un Evento</Link>
             ): 
-                <Link to="/mis-tickets" className="btn primary">Mis tickets</Link>}            
+            session ? 
+                <Link to="/mis-tickets" className="btn primary">Mis tickets</Link>
+              : <></>}            
             
             {session ? (
               <>

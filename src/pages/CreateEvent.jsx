@@ -41,8 +41,16 @@ const CreateEvent = () => {
     fecha_evento: '',
     ubicacion: '',
     ubicacion_url: '',
-    estado: 'BORRADOR'
+    estado: 'CONFIRMADO'
   });
+
+  // Función para convertir la fecha del input a un ISO string con zona horaria local
+  const toLocalISOString = (dateTimeLocal) => {
+    if (!dateTimeLocal) return null;
+    // La fecha del input datetime-local se interpreta en la zona horaria del sistema (Perú)
+    const date = new Date(dateTimeLocal);
+    return date.toISOString(); 
+  };
 
   // Componente para capturar clicks en el mapa
   function MapEvents() {
@@ -82,10 +90,14 @@ const CreateEvent = () => {
         publicBannerUrl = await uploadBanner(bannerFile);
       }
 
+      // Convertimos la fecha a ISO antes de enviarla
+      const finalIsoDate = toLocalISOString(formData.fecha_evento);
+
       const dataToSubmit = {
         ...formData,
         organizador_id: user.id,
         banner_url: publicBannerUrl,
+        fecha_evento: finalIsoDate, // Se envía la fecha procesada
         min_quorum: formData.tipo === 'POR_META' ? parseInt(formData.min_quorum) : 0,
         max_aforo: parseInt(formData.max_aforo),
         precio: parseFloat(formData.precio)
@@ -188,8 +200,14 @@ const CreateEvent = () => {
               )}
 
               <div className="field">
-                <label>Fecha y Hora</label>
-                <input className="input" type="datetime-local" step="60" onChange={(e) => setFormData({...formData, fecha_evento: e.target.value})} required />
+                <label>Fecha y Hora (Horario local de Perú)</label>
+                <input 
+                  className="input" 
+                  type="datetime-local" 
+                  step="60" 
+                  onChange={(e) => setFormData({...formData, fecha_evento: e.target.value})} 
+                  required 
+                />
               </div>
 
               <div className="field full">

@@ -6,7 +6,7 @@ import '../assets/styles/watch-all-events.css';
 
 const WatchAllEvents = () => {
   const [events, setEvents] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
   const [page, setPage] = useState(0);
   const [hasMore, setHasMore] = useState(true);
   const [selectedCategory, setSelectedCategory] = useState('TODOS');
@@ -26,41 +26,67 @@ const WatchAllEvents = () => {
     if (node) observer.current.observe(node);
   }, [loading, hasMore]);
 
-  const fetchEvents = useCallback(async (isNewCategory = false) => {
+  // 1. Unificamos la lógica de carga en un solo useEffect
+  const fetchEvents = useCallback(async (pageToFetch, category, isReset = false) => {
     try {
       setLoading(true);
-      const currentPage = isNewCategory ? 0 : page;
-      const from = currentPage * ITEMS_PER_PAGE;
-      const { data, error } = await supabase
+      const from = pageToFetch * ITEMS_PER_PAGE;
+      const to = from + ITEMS_PER_PAGE - 1;
+
+      let query = supabase
         .from('eventos')
         .select('*')
         .eq('flag_estado', 1)
         .in('estado', ['ACTIVO', 'CONFIRMADO'])
         .order('fecha_evento', { ascending: true })
-        .range(from, from + ITEMS_PER_PAGE - 1);
+        .range(from, to);
+
+      // Filtro de categoría (opcional, si planeas implementarlo en la DB)
+      if (category !== 'TODOS') {
+        query = query.ilike('titulo', `%${category}%`); 
+      }
+
+      const { data, error } = await query;
 
       if (error) throw error;
-      setEvents(prev => isNewCategory ? data : [...prev, ...data]);
-      setHasMore(data.length === ITEMS_PER_PAGE);
+
+      if (data) {
+        setEvents(prev => {
+          const newEvents = isReset ? data : [...prev, ...data];
+          // 2. Filtro de seguridad para evitar duplicados por ID en el estado
+          const uniqueIds = new Set();
+          return newEvents.filter(event => {
+            if (uniqueIds.has(event.id)) return false;
+            uniqueIds.add(event.id);
+            return true;
+          });
+        });
+        setHasMore(data.length === ITEMS_PER_PAGE);
+      }
     } catch (error) {
       console.error('Error:', error.message);
     } finally {
       setLoading(false);
     }
-  }, [page, selectedCategory]);
+  }, []);
 
-  useEffect(() => { fetchEvents(); }, [page]);
+  // 3. Este useEffect maneja tanto el inicio como la paginación de forma limpia
+  useEffect(() => {
+    fetchEvents(page, selectedCategory, page === 0);
+  }, [page, selectedCategory, fetchEvents]);
 
   const handleCategoryChange = (cat) => {
+    if (cat === selectedCategory) return;
+    // Solo reseteamos estados; el useEffect de arriba se encargará de la carga
     setSelectedCategory(cat);
-    setEvents([]); setPage(0); setHasMore(true);
-    fetchEvents(true);
+    setEvents([]); 
+    setPage(0); 
+    setHasMore(true);
   };
 
   return (
     <MainLayout>
       <main className="page-container">
-        {/* Navegación de Categorías Minimalista (Reemplazo de Breadcrumbs) */}
         <nav className="categories-bar-sticky">
           <div className="wrap category-inner">
             {categories.map(cat => (
@@ -75,16 +101,19 @@ const WatchAllEvents = () => {
           </div>
         </nav>
 
-        {/* Sección de Grilla de Eventos */}
         <section className="wrap" style={{ padding: '0px 0px 40px 0px' }}>
           <header style={{ marginBottom: '40px' }}>
-            <h1 className="section-title">Explorar Eventos</h1>
-            {/* El subtítulo ahora es opcional o puede eliminarse para más limpieza */}
+            <h1 className="section-title">
+              {selectedCategory === 'TODOS' ? 'Explorar Eventos' : `Eventos: ${selectedCategory}`}
+            </h1>
           </header>
 
           <div className="events-catalog-grid">
             {events.map((item, index) => (
-              <div ref={events.length === index + 1 ? lastEventRef : null} key={item.id}>
+              <div 
+                ref={events.length === index + 1 ? lastEventRef : null} 
+                key={`${item.id}-${index}`} // Key única combinada para mayor seguridad
+              >
                 <Event {...item} />
               </div>
             ))}
@@ -97,12 +126,11 @@ const WatchAllEvents = () => {
           )}
         </section>
 
-        {/* SECCIÓN INDEPENDIENTE: Fin de Catálogo */}
         {!hasMore && events.length > 0 && (
           <section className="footer glass wrap">
             <div className="footer-wrap">
                 <h3>¡Es todo por ahora!</h3>
-                <p>Ya viste todos los eventos activos. ¿No encontraste lo que buscabas? ¡Crea tu propio evento!</p>
+                <p>Ya viste todos los eventos disponibles en esta categoría.</p>
                 <button 
                   onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })} 
                   className="btn warning"

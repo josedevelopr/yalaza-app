@@ -36,6 +36,7 @@ const Header = () => {
   // Extraer inicial del nombre guardado en los metadatos
   const userInitial = session?.user?.user_metadata?.first_name?.charAt(0).toUpperCase() || 'U';
   const isAdminOrSupport = userRole === USER_ROLES.ADMIN || userRole === USER_ROLES.SUPPORT;
+  const isAssistantUser = userRole === USER_ROLES.ASISTENTE;
 
   return (
     <div className="glass">
@@ -46,14 +47,18 @@ const Header = () => {
         </div>
 
         <div className="top-actions" style={{ display: 'flex', alignItems: 'center' }}>
-          { isAdminOrSupport ? (
+          { isAdminOrSupport && session ? (
             <Link to="/dashboard" className="btn primary">Administrar</Link>
           ): 
            <></>
-          } 
+          }         
           <Link className="btn ghost" to="/">Inicio</Link>
           <Link className="btn ghost" to="/eventos">Ver eventos</Link>
-          <Link className="btn ghost" to="/mis-tickets">Mis Tickets</Link>
+          { isAssistantUser && session ? (
+            <Link className="btn ghost" to="/mis-tickets">Mis Tickets</Link>
+          ): 
+           <></>
+          } 
           {session ? (
             <>
               <button onClick={handleLogout} className="btn danger">
